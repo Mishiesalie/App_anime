@@ -1,0 +1,291 @@
+/* Grid Layouts */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+.grid-sidebar {
+    display: grid;
+    grid-template-rows: auto;
+    gap: 1rem;
+}
+
+/* Borders and Cards */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(236, 72, 153, 0.5);
+    box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15);
+}
+
+/* Navigation Borders */
+.nav-link {
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #ec4899;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Custom Borders for Sections */
+.section-border {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    background: rgba(31, 41, 55, 0.5);
+}
+
+/* Video Player Styles */
+.video-progress {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.video-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #ec4899;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: #ec4899;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Modal Styles */
+.modal {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    background: rgba(31, 41, 55, 0.95);
+    backdrop-filter: blur(15px);
+}
+
+/* Animations */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Modal animations */
+.modal-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.modal-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.modal-exit {
+    opacity: 1;
+}
+
+.modal-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(236, 72, 153, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(236, 72, 153, 0.7);
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .section-border {
+        padding: 1rem;
+    }
+}
+
+/* Utility Classes */
+.border-gradient {
+    position: relative;
+}
+
+.border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(to right, #ec4899, #8b5cf6);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.glass-effect {
+    background: rgba(17, 24, 39, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Layout Specific Styles */
+.anime-card {
+    background: #1a1b1e;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.anime-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Navigation Styles */
+.nav-link {
+    font-size: 14px;
+    color: #9ca3af;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: #ec4899;
+}
+
+/* Grid Layout */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+}
+
+/* Episode Info */
+.episode-info {
+    padding: 0.5rem;
+}
+
+.episode-type {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.episode-time {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+/* Social Icons */
+.social-icon {
+    width: 24px;
+    height: 24px;
+    color: #9ca3af;
+    transition: color 0.2s;
+}
+
+.social-icon:hover {
+    color: #ffffff;
+}
+
+/* Language Selector */
+.lang-selector {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.lang-separator {
+    margin: 0 0.5rem;
+    color: #4b5563;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .grid-layout {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid-layout {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-layout {
+        grid-template-columns: repeat(2, 1fr);
+    }
+} 
