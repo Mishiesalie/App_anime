@@ -288,4 +288,39 @@
     .grid-layout {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* Search Results Styles */
+.search-results {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.search-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-results::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.5);
+}
+
+.search-results::-webkit-scrollbar-thumb {
+    background: rgba(236, 72, 153, 0.5);
+    border-radius: 4px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+    background: rgba(236, 72, 153, 0.7);
+}
+
+/* Animation for search results */
+.search-results {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.search-results:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
 } 
