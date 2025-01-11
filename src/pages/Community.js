@@ -1,49 +1,20 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { CommunityProvider } from '../contexts/CommunityContext';
+import { useCommunity } from '../contexts/CommunityContext';
+import CreatePost from '../components/community/CreatePost';
+import Post from '../components/community/Post';
 
-const Community = () => {
-  const { user, setIsLoginModalOpen } = useAuth();
+const CommunityContent = () => {
+  const { posts, isLoading } = useCommunity();
   const [activeTab, setActiveTab] = useState('discussions');
-  const [newPost, setNewPost] = useState('');
 
-  // Simulated data
-  const discussions = [
-    {
-      id: 1,
-      user: { username: 'AnimeUser1', avatar: 'https://via.placeholder.com/40' },
-      title: 'Latest One Piece Episode Discussion',
-      content: 'What did everyone think about the latest developments?',
-      likes: 156,
-      comments: 48,
-      timestamp: '2h ago'
-    },
-    {
-      id: 2,
-      user: { username: 'MangaLover', avatar: 'https://via.placeholder.com/40' },
-      title: 'Upcoming Spring Season Recommendations',
-      content: 'Looking for recommendations for the upcoming season!',
-      likes: 89,
-      comments: 32,
-      timestamp: '4h ago'
-    }
-  ];
-
-  const trendingTopics = [
-    '# One Piece 1086',
-    '# Spring 2024 Anime',
-    '# Jujutsu Kaisen',
-    '# Attack on Titan',
-    '# Anime Awards 2024'
-  ];
-
-  const handlePost = () => {
-    if (!user) {
-      setIsLoginModalOpen(true);
-      return;
-    }
-    // Implement post creation logic
-    setNewPost('');
-  };
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="py-8">
@@ -55,26 +26,7 @@ const Community = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Content */}
         <div className="flex-1">
-          {/* Create Post */}
-          <div className="bg-gray-800 rounded-lg p-4 mb-6">
-            <textarea
-              placeholder={user ? "What's on your mind?" : "Login to join the discussion"}
-              value={newPost}
-              onChange={(e) => setNewPost(e.target.value)}
-              disabled={!user}
-              className="w-full bg-gray-700 text-white rounded-lg p-4 mb-4 focus:outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-50"
-              rows="3"
-            />
-            <div className="flex justify-end">
-              <button
-                onClick={handlePost}
-                disabled={!user || !newPost.trim()}
-                className="bg-pink-600 px-6 py-2 rounded-md hover:bg-pink-700 text-white disabled:opacity-50"
-              >
-                Post
-              </button>
-            </div>
-          </div>
+          <CreatePost />
 
           {/* Tabs */}
           <div className="flex space-x-4 mb-6">
@@ -100,45 +52,29 @@ const Community = () => {
             </button>
           </div>
 
-          {/* Discussions List */}
-          <div className="space-y-4">
-            {discussions.map((post) => (
-              <div key={post.id} className="bg-gray-800 rounded-lg p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <img
-                    src={post.user.avatar}
-                    alt={post.user.username}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div>
-                    <h3 className="text-white font-medium">{post.user.username}</h3>
-                    <span className="text-gray-400 text-sm">{post.timestamp}</span>
-                  </div>
-                </div>
-                <h2 className="text-white text-lg font-medium mb-2">{post.title}</h2>
-                <p className="text-gray-300 mb-4">{post.content}</p>
-                <div className="flex items-center space-x-4 text-gray-400">
-                  <button className="flex items-center space-x-2 hover:text-pink-500">
-                    <span>❤️ {post.likes}</span>
-                  </button>
-                  <button className="flex items-center space-x-2 hover:text-pink-500">
-                    <span>💬 {post.comments}</span>
-                  </button>
-                </div>
-              </div>
+          {/* Posts List */}
+          <div className="space-y-6">
+            {posts.map((post) => (
+              <Post key={post.id} post={post} />
             ))}
           </div>
         </div>
 
         {/* Sidebar */}
         <div className="lg:w-80">
-          <div className="bg-gray-800 rounded-lg p-4">
+          <div className="bg-gray-800 rounded-lg p-6 sticky top-6">
             <h2 className="text-xl font-bold text-white mb-4">Trending Topics</h2>
             <div className="space-y-2">
-              {trendingTopics.map((topic, index) => (
+              {[
+                '# One Piece 1086',
+                '# Spring 2024 Anime',
+                '# Jujutsu Kaisen',
+                '# Attack on Titan',
+                '# Anime Awards 2024'
+              ].map((topic, index) => (
                 <button
                   key={index}
-                  className="block w-full text-left px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="block w-full text-left px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 >
                   {topic}
                 </button>
@@ -148,6 +84,14 @@ const Community = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Community = () => {
+  return (
+    <CommunityProvider>
+      <CommunityContent />
+    </CommunityProvider>
   );
 };
 

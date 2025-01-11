@@ -7,21 +7,24 @@ import RandomAnime from './pages/RandomAnime';
 import Community from './pages/Community';
 import LoginModal from './components/auth/LoginModal';
 import AnimeDetail from './pages/AnimeDetail';
+import { CommunityProvider } from './contexts/CommunityContext';
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <LoginModal />
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="watch2gether" element={<Watch2gether />} />
-            <Route path="random" element={<RandomAnime />} />
-            <Route path="community" element={<Community />} />
-            <Route path="anime/:id" element={<AnimeDetail />} />
-          </Route>
-        </Routes>
+        <CommunityProvider>
+          <LoginModal />
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="watch2gether" element={<Watch2gether />} />
+              <Route path="random" element={<RandomAnime />} />
+              <Route path="community" element={<Community />} />
+              <Route path="anime/:id" element={<AnimeDetail />} />
+            </Route>
+          </Routes>
+        </CommunityProvider>
       </AuthProvider>
     </BrowserRouter>
   );
