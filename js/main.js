@@ -249,4 +249,171 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPage++;
         loadAnimeGrid(currentPage);
     });
-}); 
+
+    // Add Top 10 tab functionality
+    const topAnimeTabs = document.querySelectorAll('[data-tab]');
+    let currentTab = 'today';
+
+    topAnimeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabValue = tab.dataset.tab;
+            
+            // Update active tab styling
+            topAnimeTabs.forEach(t => {
+                if (t.dataset.tab === tabValue) {
+                    t.classList.remove('text-gray-400', 'hover:text-white');
+                    t.classList.add('bg-pink-600', 'text-white');
+                } else {
+                    t.classList.remove('bg-pink-600', 'text-white');
+                    t.classList.add('text-gray-400', 'hover:text-white');
+                }
+            });
+
+            // Load new data
+            currentTab = tabValue;
+            loadTopAnime(tabValue);
+        });
+    });
+
+    // Initial load of top anime
+    loadTopAnime(currentTab);
+});
+
+async function loadTopAnime(tab = 'today') {
+    const topAnimeList = document.getElementById('topAnimeList');
+    if (!topAnimeList) return;
+
+    // Show loading state first
+    topAnimeList.innerHTML = Array(10).fill(0).map((_, index) => `
+        <div class="animate-pulse flex items-center space-x-3 p-2">
+            <div class="text-2xl font-bold text-pink-500/50 w-8">${index + 1}</div>
+            <div class="w-12 h-16 bg-gray-700 rounded"></div>
+            <div class="flex-1">
+                <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+                <div class="mt-2 h-3 bg-gray-700 rounded w-1/2"></div>
+            </div>
+        </div>
+    `).join('');
+
+    try {
+        // Determine sort method based on tab
+        let sort;
+        switch (tab) {
+            case 'today':
+                sort = 'TRENDING_DESC';
+                break;
+            case 'week':
+                sort = 'POPULARITY_DESC';
+                break;
+            case 'month':
+                sort = 'SCORE_DESC';
+                break;
+            default:
+                sort = 'TRENDING_DESC';
+        }
+
+        // Fetch data using the animeData API
+        const query = `
+            query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
+                Page(page: 1, perPage: 10) {
+                    media(type: ANIME, sort: $sort, status_not: NOT_YET_RELEASED) {
+                        id
+                        title {
+                            romaji
+                            english
+                        }
+                        coverImage {
+                            medium
+                        }
+                        averageScore
+                        popularity
+                        trending
+                        episodes
+                        nextAiringEpisode {
+                            episode
+                            timeUntilAiring
+                        }
+                        format
+                        status
+                    }
+                }
+            }
+        `;
+
+        const response = await fetch('https://graphql.anilist.co', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query,
+                variables: {
+                    page: 1,
+                    perPage: 10,
+                    sort: [sort]
+                }
+            })
+        });
+
+        const data = await response.json();
+        const animes = data.data.Page.media;
+
+        // Render the anime list
+        topAnimeList.innerHTML = animes.map((anime, index) => `
+            <a href="/anime/${anime.id}" 
+               class="flex items-center space-x-3 p-2 hover:bg-gray-700/50 rounded-lg group transition-colors">
+                <span class="text-2xl font-bold text-pink-500 w-8">
+                    ${index + 1}
+                </span>
+                <div class="relative flex-shrink-0">
+                    <img
+                        src="${anime.coverImage.medium}"
+                        alt="${anime.title.english || anime.title.romaji}"
+                        class="w-12 h-16 object-cover rounded shadow-lg group-hover:shadow-pink-500/20 transition-shadow"
+                        loading="lazy"
+                    >
+                    ${anime.nextAiringEpisode ? `
+                        <div class="absolute top-0 right-0 bg-pink-600 text-white text-xs px-1 rounded-bl">
+                            EP ${anime.nextAiringEpisode.episode}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-white text-sm font-medium truncate group-hover:text-pink-500 transition-colors">
+                        ${anime.title.english || anime.title.romaji}
+                    </h3>
+                    <div class="flex items-center space-x-2 text-xs text-gray-400 mt-1">
+                        ${anime.averageScore ? `
+                            <span class="flex items-center">
+                                <span class="text-pink-500">★</span>
+                                ${(anime.averageScore / 10).toFixed(1)}
+                            </span>
+                        ` : ''}
+                        ${anime.trending ? `
+                            <span class="flex items-center">
+                                <span class="text-green-500">↑</span>
+                                ${anime.trending}
+                            </span>
+                        ` : ''}
+                        ${anime.format ? `
+                            <span>${anime.format}</span>
+                        ` : ''}
+                    </div>
+                </div>
+            </a>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading top anime:', error);
+        topAnimeList.innerHTML = `
+            <div class="text-center py-4">
+                <div class="text-red-500 mb-2">Failed to load top anime</div>
+                <button onclick="loadTopAnime('${tab}')" 
+                        class="text-sm text-gray-400 hover:text-pink-500">
+                    Try again
+                </button>
+            </div>
+        `;
+    }
+} 
