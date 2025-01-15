@@ -6,52 +6,13 @@ const socialIcons = {
     twitter: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>'
 };
 
-// Update the navbar HTML
-document.querySelector('nav .max-w-7xl').innerHTML = `
-    <div class="flex items-center justify-between h-16">
-        <!-- Left Section -->
-        <div class="flex items-center space-x-4">
-            <button class="text-gray-400 hover:text-white">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <a href="/" class="flex-shrink-0">
-                <h1 class="text-2xl font-bold">h!anime</h1>
-            </a>
-        </div>
-
-        <!-- Center Section -->
-        <div class="hidden md:flex items-center space-x-6">
-            <a href="/watch2gether" class="hover:text-pink-500">Watch2gether</a>
-            <a href="/random" class="hover:text-pink-500">Random</a>
-            <a href="/anime-name" class="hover:text-pink-500">Anime Name</a>
-            <a href="/community" class="hover:text-pink-500">Community</a>
-        </div>
-
-        <!-- Right Section -->
-        <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-3">
-                ${Object.entries(socialIcons).map(([name, icon]) => `
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors" aria-label="${name}">
-                        ${icon}
-                    </a>
-                `).join('')}
-            </div>
-            <div class="border-l border-gray-700 h-6 mx-2"></div>
-            <button class="text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-            </button>
-            <div class="flex items-center space-x-2">
-                <button class="text-sm hover:text-pink-500">EN</button>
-                <span class="text-gray-600">|</span>
-                <button class="text-sm hover:text-pink-500">JP</button>
-            </div>
-        </div>
-    </div>
-`;
+// Add these filter options at the top of main.js
+const filterOptions = {
+    format: ['TV', 'MOVIE', 'OVA', 'ONA', 'SPECIAL'],
+    status: ['RELEASING', 'FINISHED', 'NOT_YET_RELEASED', 'CANCELLED'],
+    season: ['WINTER', 'SPRING', 'SUMMER', 'FALL'],
+    genres: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mecha', 'Mystery', 'Romance', 'Sci-Fi', 'Slice of Life', 'Sports', 'Supernatural', 'Thriller']
+};
 
 // Main application logic
 document.addEventListener('DOMContentLoaded', () => {
@@ -187,21 +148,101 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function loadAnimeGrid(page = 1) {
+    async function loadAnimeGrid(page = 1, filters = {}) {
         try {
-            const data = await animeData.fetchLatestAnime(page);
-            const animes = data.Page.media;
-            
+            // Construct filter variables for the query
+            const variables = {
+                page,
+                perPage: 12,
+                format_in: filters.format,
+                status_in: filters.status,
+                season_in: filters.season,
+                genre_in: filters.genre
+            };
+
+            // Update the query to include filters
+            const query = `
+                query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $status_in: [MediaStatus], $season_in: [MediaSeason], $genre_in: [String]) {
+                    Page(page: $page, perPage: $perPage) {
+                        pageInfo {
+                            total
+                            currentPage
+                            lastPage
+                            hasNextPage
+                        }
+                        media(
+                            type: ANIME,
+                            format_in: $format_in,
+                            status_in: $status_in,
+                            season_in: $season_in,
+                            genre_in: $genre_in,
+                            sort: [TRENDING_DESC, POPULARITY_DESC]
+                        ) {
+                            id
+                            title {
+                                romaji
+                                english
+                                native
+                            }
+                            coverImage {
+                                large
+                                medium
+                            }
+                            format
+                            episodes
+                            duration
+                            status
+                            genres
+                            averageScore
+                            popularity
+                            nextAiringEpisode {
+                                episode
+                                timeUntilAiring
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const response = await fetch('https://graphql.anilist.co', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ query, variables })
+            });
+
+            const data = await response.json();
+            const animes = data.data.Page.media;
+
+            // Clear grid if it's a new search
+            if (page === 1) {
+                animeGrid.innerHTML = '';
+            }
+
             animes.forEach(anime => {
                 const card = createAnimeCard(anime);
                 animeGrid.appendChild(card);
             });
 
-            if (!data.Page.pageInfo.hasNextPage) {
+            // Update load more button visibility
+            if (!data.data.Page.pageInfo.hasNextPage) {
                 loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
             }
+
         } catch (error) {
             console.error('Error loading anime grid:', error);
+            animeGrid.innerHTML = `
+                <div class="col-span-full text-center py-8">
+                    <div class="text-red-500 mb-2">Failed to load anime</div>
+                    <button onclick="loadAnimeGrid(1)" class="text-sm text-gray-400 hover:text-pink-500">
+                        Try again
+                    </button>
+                </div>
+            `;
         }
     }
 
@@ -241,14 +282,249 @@ document.addEventListener('DOMContentLoaded', () => {
         return div;
     }
 
-    // Load initial content
-    loadAnimeGrid();
+    // Create and append filter modal
+    const filterModal = document.createElement('div');
+    filterModal.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50';
+    filterModal.innerHTML = `
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-800 rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-white">Filters</h3>
+                <button class="text-gray-400 hover:text-white" id="closeFilterBtn">✕</button>
+            </div>
+            <div class="space-y-4">
+                <!-- Format -->
+                <div>
+                    <label class="block text-white mb-2">Format</label>
+                    <div class="flex flex-wrap gap-2">
+                        ${filterOptions.format.map(format => `
+                            <button data-filter="format" data-value="${format}"
+                                class="px-3 py-1 rounded-full text-sm border border-gray-600 hover:border-pink-500 hover:text-pink-500">
+                                ${format}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
 
-    // Load more button handler
+                <!-- Status -->
+                <div>
+                    <label class="block text-white mb-2">Status</label>
+                    <div class="flex flex-wrap gap-2">
+                        ${filterOptions.status.map(status => `
+                            <button data-filter="status" data-value="${status}"
+                                class="px-3 py-1 rounded-full text-sm border border-gray-600 hover:border-pink-500 hover:text-pink-500">
+                                ${status.replace(/_/g, ' ')}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Season -->
+                <div>
+                    <label class="block text-white mb-2">Season</label>
+                    <div class="flex flex-wrap gap-2">
+                        ${filterOptions.season.map(season => `
+                            <button data-filter="season" data-value="${season}"
+                                class="px-3 py-1 rounded-full text-sm border border-gray-600 hover:border-pink-500 hover:text-pink-500">
+                                ${season}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Genres -->
+                <div>
+                    <label class="block text-white mb-2">Genres</label>
+                    <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto custom-scrollbar">
+                        ${filterOptions.genres.map(genre => `
+                            <button data-filter="genre" data-value="${genre}"
+                                class="px-3 py-1 rounded-full text-sm border border-gray-600 hover:border-pink-500 hover:text-pink-500">
+                                ${genre}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between mt-6">
+                <button id="clearFiltersBtn"
+                    class="px-4 py-2 text-sm text-gray-400 hover:text-white">
+                    Clear all
+                </button>
+                <button id="applyFiltersBtn"
+                    class="px-6 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700">
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(filterModal);
+
+    // Active filters state
+    let activeFilters = {
+        format: [],
+        status: [],
+        season: [],
+        genre: []
+    };
+
+    // Filter button click handlers
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const filterType = button.dataset.filter;
+            const value = button.dataset.value;
+            
+            if (button.classList.contains('text-pink-500')) {
+                // Remove filter
+                button.classList.remove('text-pink-500', 'border-pink-500');
+                activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
+            } else {
+                // Add filter
+                button.classList.add('text-pink-500', 'border-pink-500');
+                if (!activeFilters[filterType].includes(value)) {
+                    activeFilters[filterType].push(value);
+                }
+            }
+        });
+    });
+
+    // Filter modal controls
+    const filterBtn = document.querySelector('[data-action="filter"]');
+    const closeFilterBtn = document.getElementById('closeFilterBtn');
+    const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+
+    filterBtn?.addEventListener('click', () => {
+        filterModal.classList.remove('hidden');
+    });
+
+    closeFilterBtn?.addEventListener('click', () => {
+        filterModal.classList.add('hidden');
+    });
+
+    clearFiltersBtn?.addEventListener('click', () => {
+        activeFilters = {
+            format: [],
+            status: [],
+            season: [],
+            genre: []
+        };
+        filterButtons.forEach(button => {
+            button.classList.remove('text-pink-500', 'border-pink-500');
+        });
+    });
+
+    applyFiltersBtn?.addEventListener('click', async () => {
+        filterModal.classList.add('hidden');
+        await loadAnimeGrid(1, activeFilters);
+    });
+
+    // Update loadAnimeGrid function to handle filters
+    async function loadAnimeGrid(page = 1, filters = {}) {
+        try {
+            // Construct filter variables for the query
+            const variables = {
+                page,
+                perPage: 12,
+                format_in: filters.format,
+                status_in: filters.status,
+                season_in: filters.season,
+                genre_in: filters.genre
+            };
+
+            // Update the query to include filters
+            const query = `
+                query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $status_in: [MediaStatus], $season_in: [MediaSeason], $genre_in: [String]) {
+                    Page(page: $page, perPage: $perPage) {
+                        pageInfo {
+                            total
+                            currentPage
+                            lastPage
+                            hasNextPage
+                        }
+                        media(
+                            type: ANIME,
+                            format_in: $format_in,
+                            status_in: $status_in,
+                            season_in: $season_in,
+                            genre_in: $genre_in,
+                            sort: [TRENDING_DESC, POPULARITY_DESC]
+                        ) {
+                            id
+                            title {
+                                romaji
+                                english
+                                native
+                            }
+                            coverImage {
+                                large
+                                medium
+                            }
+                            format
+                            episodes
+                            duration
+                            status
+                            genres
+                            averageScore
+                            popularity
+                            nextAiringEpisode {
+                                episode
+                                timeUntilAiring
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const response = await fetch('https://graphql.anilist.co', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ query, variables })
+            });
+
+            const data = await response.json();
+            const animes = data.data.Page.media;
+
+            // Clear grid if it's a new search
+            if (page === 1) {
+                animeGrid.innerHTML = '';
+            }
+
+            animes.forEach(anime => {
+                const card = createAnimeCard(anime);
+                animeGrid.appendChild(card);
+            });
+
+            // Update load more button visibility
+            if (!data.data.Page.pageInfo.hasNextPage) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+            }
+
+        } catch (error) {
+            console.error('Error loading anime grid:', error);
+            animeGrid.innerHTML = `
+                <div class="col-span-full text-center py-8">
+                    <div class="text-red-500 mb-2">Failed to load anime</div>
+                    <button onclick="loadAnimeGrid(1)" class="text-sm text-gray-400 hover:text-pink-500">
+                        Try again
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    // Update the load more button to include filters
     loadMoreBtn?.addEventListener('click', () => {
         currentPage++;
-        loadAnimeGrid(currentPage);
+        loadAnimeGrid(currentPage, activeFilters);
     });
+
+    // Initial load
+    loadAnimeGrid(1);
 
     // Add Top 10 tab functionality
     const topAnimeTabs = document.querySelectorAll('[data-tab]');
