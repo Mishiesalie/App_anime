@@ -18,7 +18,7 @@ const filterOptions = {
 document.addEventListener('DOMContentLoaded', () => {
     const animeGrid = document.getElementById('animeGrid');
     const loadMoreBtn = document.getElementById('loadMoreBtn');
-    const searchInput = document.querySelector('input[type="text"]');
+    const searchInput = document.querySelector('input[placeholder="Search anime..."]');
     const mainContent = document.querySelector('main');
     let currentPage = 1;
     let isSearching = false;
@@ -26,90 +26,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Create search results container with improved styling
     const searchResultsContainer = document.createElement('div');
-    searchResultsContainer.className = 'search-results hidden fixed top-16 left-1/2 transform -translate-x-1/2 w-full max-w-2xl bg-gray-800/95 backdrop-blur-md rounded-lg shadow-xl z-50 max-h-[70vh] overflow-y-auto border border-gray-700';
+    searchResultsContainer.className = 'fixed left-1/2 transform -translate-x-1/2 w-full max-w-2xl bg-gray-800/95 backdrop-blur-md rounded-lg shadow-xl z-50 mt-2 overflow-hidden';
+    searchResultsContainer.style.display = 'none';
     document.body.appendChild(searchResultsContainer);
 
-    function displaySearchResults(results) {
-        if (!results.Page.media.length) {
-            searchResultsContainer.innerHTML = `
-                <div class="p-8 text-center">
-                    <div class="text-gray-400 mb-2">No results found</div>
-                    <div class="text-sm text-gray-500">Try different keywords</div>
-                </div>
-            `;
-            return;
-        }
-
-        searchResultsContainer.innerHTML = `
-            <div class="divide-y divide-gray-700">
-                ${results.Page.media.map(anime => `
-                    <a href="/anime/${anime.id}" 
-                       class="flex items-start space-x-4 p-4 hover:bg-gray-700/50 transition-colors group">
-                        <div class="relative flex-shrink-0">
-                            <img src="${anime.coverImage.medium}" 
-                                 alt="${anime.title.english || anime.title.romaji}"
-                                 class="w-16 h-24 object-cover rounded shadow-lg group-hover:shadow-pink-500/20"
-                            >
-                            ${anime.averageScore ? `
-                                <div class="absolute top-1 right-1 bg-gray-900/90 px-1.5 py-0.5 rounded text-xs">
-                                    <span class="text-pink-500">★</span>
-                                    <span class="text-gray-300">${(anime.averageScore / 10).toFixed(1)}</span>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="flex-1 min-w-0 py-1">
-                            <h3 class="text-white font-medium truncate group-hover:text-pink-500 transition-colors">
-                                ${anime.title.english || anime.title.romaji}
-                            </h3>
-                            <div class="flex flex-wrap gap-2 mt-2">
-                                <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
-                                    ${anime.format || 'N/A'}
-                                </span>
-                                ${anime.episodes ? `
-                                    <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
-                                        ${anime.episodes} eps
-                                    </span>
-                                ` : ''}
-                                ${anime.duration ? `
-                                    <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
-                                        ${anime.duration} min
-                                    </span>
-                                ` : ''}
-                            </div>
-                            ${anime.status ? `
-                                <div class="mt-2 text-xs text-gray-400">
-                                    Status: ${anime.status.toLowerCase().replace(/_/g, ' ')}
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                            </svg>
-                        </div>
-                    </a>
-                `).join('')}
-            </div>
-            <div class="p-4 bg-gray-800/80 border-t border-gray-700 text-center">
-                <button class="text-sm text-gray-400 hover:text-pink-500">
-                    View all results
-                </button>
-            </div>
-        `;
-    }
-
-    // Update search functionality with loading state
+    // Enhanced search input handler
     searchInput?.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
-        const searchTerm = e.target.value.trim();
+        const query = e.target.value.trim();
 
-        if (searchTerm.length < 3) {
-            searchResultsContainer.classList.add('hidden');
+        if (query.length < 3) {
+            searchResultsContainer.style.display = 'none';
             return;
         }
 
         // Show loading state
-        searchResultsContainer.classList.remove('hidden');
+        searchResultsContainer.style.display = 'block';
         searchResultsContainer.innerHTML = `
             <div class="p-8 text-center">
                 <div class="animate-spin rounded-full h-8 w-8 border-2 border-pink-500 border-t-transparent mx-auto"></div>
@@ -119,8 +51,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchTimeout = setTimeout(async () => {
             try {
-                const results = await animeData.searchAnime(searchTerm);
-                displaySearchResults(results);
+                const query = `
+                    query ($search: String) {
+                        Page(page: 1, perPage: 8) {
+                            media(search: $search, type: ANIME, sort: POPULARITY_DESC) {
+                                id
+                                title {
+                                    romaji
+                                    english
+                                }
+                                coverImage {
+                                    medium
+                                }
+                                format
+                                episodes
+                                duration
+                                status
+                                averageScore
+                                season
+                                seasonYear
+                            }
+                        }
+                    }
+                `;
+
+                const response = await fetch('https://graphql.anilist.co', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query,
+                        variables: { search: e.target.value }
+                    })
+                });
+
+                const data = await response.json();
+                const results = data.data.Page.media;
+
+                if (results.length === 0) {
+                    searchResultsContainer.innerHTML = `
+                        <div class="p-8 text-center">
+                            <div class="text-gray-400">No results found</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                searchResultsContainer.innerHTML = `
+                    <div class="divide-y divide-gray-700">
+                        ${results.map(anime => `
+                            <a href="/anime/${anime.id}" 
+                               class="flex items-start space-x-4 p-4 hover:bg-gray-700/50 transition-colors group">
+                                <div class="relative flex-shrink-0">
+                                    <img src="${anime.coverImage.medium}" 
+                                         alt="${anime.title.english || anime.title.romaji}"
+                                         class="w-16 h-24 object-cover rounded shadow-lg group-hover:shadow-pink-500/20"
+                                         loading="lazy"
+                                    >
+                                    ${anime.averageScore ? `
+                                        <div class="absolute top-1 right-1 bg-gray-900/90 px-1.5 py-0.5 rounded text-xs">
+                                            <span class="text-pink-500">★</span>
+                                            <span class="text-gray-300">${(anime.averageScore / 10).toFixed(1)}</span>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-white font-medium truncate group-hover:text-pink-500">
+                                        ${anime.title.english || anime.title.romaji}
+                                    </h3>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        ${anime.format ? `
+                                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
+                                                ${anime.format}
+                                            </span>
+                                        ` : ''}
+                                        ${anime.episodes ? `
+                                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
+                                                ${anime.episodes} eps
+                                            </span>
+                                        ` : ''}
+                                        ${anime.season && anime.seasonYear ? `
+                                            <span class="bg-gray-700 px-2 py-0.5 rounded text-xs text-gray-300">
+                                                ${anime.season} ${anime.seasonYear}
+                                            </span>
+                                        ` : ''}
+                                    </div>
+                                    <div class="mt-2 text-xs text-gray-400">
+                                        Status: ${anime.status?.toLowerCase().replace(/_/g, ' ')}
+                                    </div>
+                                </div>
+                            </a>
+                        `).join('')}
+                    </div>
+                    <div class="p-4 bg-gray-800/80 border-t border-gray-700 text-center">
+                        <button class="text-sm text-gray-400 hover:text-pink-500">
+                            View all results
+                        </button>
+                    </div>
+                `;
             } catch (error) {
                 console.error('Search error:', error);
                 searchResultsContainer.innerHTML = `
@@ -133,18 +163,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     });
 
-    // Enhanced click outside handling
+    // Close search results when clicking outside
     document.addEventListener('click', (e) => {
         if (!searchResultsContainer.contains(e.target) && 
             !searchInput.contains(e.target)) {
-            searchResultsContainer.classList.add('hidden');
+            searchResultsContainer.style.display = 'none';
         }
     });
 
-    // Handle escape key to close search
+    // Close search results with Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            searchResultsContainer.classList.add('hidden');
+            searchResultsContainer.style.display = 'none';
+            searchInput.blur();
+        }
+    });
+
+    // Focus search input with Ctrl + K
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
         }
     });
 
