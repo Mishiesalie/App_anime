@@ -189,17 +189,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadAnimeGrid(page = 1, filters = {}) {
         try {
-            // Construct filter variables for the query
+            // Show loading state
+            if (page === 1) {
+                animeGrid.innerHTML = `
+                    <div class="col-span-full">
+                        <div class="flex justify-center items-center py-20">
+                            <div class="animate-spin rounded-full h-12 w-12 border-4 border-pink-500 border-t-transparent"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            console.log('Fetching anime data...', { page, filters });
+
             const variables = {
                 page,
                 perPage: 12,
-                format_in: filters.format,
-                status_in: filters.status,
-                season_in: filters.season,
-                genre_in: filters.genre
+                format_in: filters.format || null,
+                status_in: filters.status || null,
+                season_in: filters.season || null,
+                genre_in: filters.genre || null
             };
 
-            // Update the query to include filters
             const query = `
                 query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $status_in: [MediaStatus], $season_in: [MediaSeason], $genre_in: [String]) {
                     Page(page: $page, perPage: $perPage) {
@@ -252,12 +263,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ query, variables })
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
+
+            if (data.errors) {
+                console.error('GraphQL Errors:', data.errors);
+                throw new Error(data.errors[0].message);
+            }
+
+            console.log('API Response:', data);
+
             const animes = data.data.Page.media;
 
             // Clear grid if it's a new search
             if (page === 1) {
                 animeGrid.innerHTML = '';
+            }
+
+            if (animes.length === 0) {
+                animeGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-gray-400 mb-4">No anime found</div>
+                        <button onclick="loadAnimeGrid(1)" class="text-sm text-pink-500 hover:text-pink-400">
+                            Reset filters
+                        </button>
+                    </div>
+                `;
+                return;
             }
 
             animes.forEach(anime => {
@@ -274,14 +309,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Error loading anime grid:', error);
-            animeGrid.innerHTML = `
+            
+            const errorMessage = `
                 <div class="col-span-full text-center py-8">
-                    <div class="text-red-500 mb-2">Failed to load anime</div>
-                    <button onclick="loadAnimeGrid(1)" class="text-sm text-gray-400 hover:text-pink-500">
+                    <div class="text-red-500 mb-4">Failed to load anime</div>
+                    <div class="text-gray-400 mb-4">${error.message}</div>
+                    <button onclick="loadAnimeGrid(1)" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
                         Try again
                     </button>
                 </div>
             `;
+
+            if (page === 1) {
+                animeGrid.innerHTML = errorMessage;
+            } else {
+                // If error occurs during "load more", append error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'col-span-full text-center py-4';
+                errorDiv.innerHTML = errorMessage;
+                animeGrid.appendChild(errorDiv);
+            }
         }
     }
 
@@ -289,29 +336,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.className = 'anime-card';
         
+        const title = anime.title.english || anime.title.romaji || anime.title.native || 'Untitled';
+        const coverImage = anime.coverImage?.large || anime.coverImage?.medium || 'https://via.placeholder.com/300x400?text=No+Image';
+        const format = anime.format || 'Unknown';
+        const duration = anime.duration ? `${anime.duration}m` : '--';
         const nextEp = anime.nextAiringEpisode 
             ? `EP ${anime.nextAiringEpisode.episode}` 
             : anime.episodes 
                 ? `${anime.episodes} Episodes` 
-                : anime.format;
+                : format;
 
         div.innerHTML = `
-            <a href="/anime/${anime.id}" class="block">
-                <div class="relative">
-                    <img 
-                        src="${anime.coverImage.large}" 
-                        alt="${anime.title.english || anime.title.romaji}"
-                        class="w-full aspect-video object-cover rounded-lg"
-                        loading="lazy"
-                    >
-                    <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80">
-                        <div class="flex items-center space-x-2 text-xs text-gray-300">
-                            <span class="bg-gray-800/90 px-2 py-0.5 rounded">${anime.format || 'TV'}</span>
+            <a href="/anime/${anime.id}" class="block group">
+                <div class="relative overflow-hidden rounded-lg">
+                    <div class="aspect-video relative">
+                        <img 
+                            src="${coverImage}" 
+                            alt="${title}"
+                            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onerror="this.src='https://via.placeholder.com/300x400?text=Error+Loading+Image'"
+                        >
+                        ${anime.averageScore ? `
+                            <div class="absolute top-2 right-2 bg-gray-900/90 px-2 py-1 rounded text-sm">
+                                <span class="text-pink-500">★</span>
+                                <span class="text-white">${(anime.averageScore / 10).toFixed(1)}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80">
+                        <div class="flex items-center space-x-2 text-xs text-gray-300 mb-1">
+                            <span class="bg-gray-800/90 px-2 py-0.5 rounded">${format}</span>
                             <span>•</span>
-                            <span>${anime.duration || '24'}m</span>
+                            <span>${duration}</span>
                         </div>
-                        <h3 class="text-sm text-white mt-1 line-clamp-2">
-                            ${anime.title.english || anime.title.romaji}
+                        <h3 class="text-sm text-white font-medium line-clamp-2 group-hover:text-pink-500 transition-colors">
+                            ${title}
                         </h3>
                     </div>
                 </div>

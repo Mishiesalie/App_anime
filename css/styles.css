@@ -422,3 +422,64 @@
         gap: 0.5rem;
     }
 }
+
+/* Page Frame */
+.page-frame {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.page-frame::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    border: 1px solid rgba(236, 72, 153, 0.2);
+    pointer-events: none;
+}
+
+.page-frame::after {
+    content: '';
+    position: fixed;
+    inset: 8px;
+    border: 1px solid rgba(236, 72, 153, 0.1);
+    pointer-events: none;
+}
+
+/* Corner Accents */
+.corner {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 101;
+}
+
+.corner-tl {
+    top: 16px;
+    left: 16px;
+    border-top: 2px solid rgba(236, 72, 153, 0.5);
+    border-left: 2px solid rgba(236, 72, 153, 0.5);
+}
+
+.corner-tr {
+    top: 16px;
+    right: 16px;
+    border-top: 2px solid rgba(236, 72, 153, 0.5);
+    border-right: 2px solid rgba(236, 72, 153, 0.5);
+}
+
+.corner-bl {
+    bottom: 16px;
+    left: 16px;
+    border-bottom: 2px solid rgba(236, 72, 153, 0.5);
+    border-left: 2px solid rgba(236, 72, 153, 0.5);
+}
+
+.corner-br {
+    bottom: 16px;
+    right: 16px;
+    border-bottom: 2px solid rgba(236, 72, 153, 0.5);
+    border-right: 2px solid rgba(236, 72, 153, 0.5);
+}

@@ -8,151 +8,161 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-900 min-h-screen">
-    <!-- Sidebar Navigation -->
-    <div id="sideNav" class="fixed inset-y-0 left-0 w-64 bg-gray-900/95 backdrop-blur-sm transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
-        <!-- Close Button -->
-        <div class="p-4 border-b border-gray-800">
-            <button id="closeSideNav" class="flex items-center text-gray-400 hover:text-white">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-                Close menu
-            </button>
-        </div>
+    <!-- Page Frame -->
+    <div class="page-frame"></div>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
 
-        <!-- Community Button -->
-        <div class="p-4">
-            <a href="/community" class="flex items-center w-full px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                Community
-            </a>
-        </div>
-
-        <!-- Navigation Links -->
-        <nav class="px-4 space-y-1">
-            <a href="/" class="block py-2 text-white hover:text-pink-500">Home</a>
-            <a href="/subbed" class="block py-2 text-white hover:text-pink-500">Subbed Anime</a>
-            <a href="/dubbed" class="block py-2 text-white hover:text-pink-500">Dubbed Anime</a>
-            <a href="/popular" class="block py-2 text-white hover:text-pink-500">Most Popular</a>
-            <a href="/movies" class="block py-2 text-white hover:text-pink-500">Movies</a>
-            <a href="/tv-series" class="block py-2 text-white hover:text-pink-500">TV Series</a>
-            <a href="/ovas" class="block py-2 text-white hover:text-pink-500">OVAs</a>
-            <a href="/onas" class="block py-2 text-white hover:text-pink-500">ONAs</a>
-            <a href="/specials" class="block py-2 text-white hover:text-pink-500">Specials</a>
-            <a href="/events" class="block py-2 text-white hover:text-pink-500">Events</a>
-            <a href="/app" class="block py-2 text-white hover:text-pink-500">HiAnime App</a>
-        </nav>
-
-        <!-- Genre Section -->
-        <div class="px-4 mt-6">
-            <h3 class="text-lg font-semibold text-white mb-4">Genre</h3>
-            <div class="grid grid-cols-2 gap-2" id="genreGrid">
-                <!-- Genres will be populated by JavaScript -->
-            </div>
-            <button id="moreGenres" class="mt-4 text-sm text-gray-400 hover:text-white flex items-center">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                More
-            </button>
-        </div>
-    </div>
-
-    <!-- Main Navigation -->
-    <nav class="bg-gray-900 text-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <!-- Menu Button -->
-                <button id="openSideNav" class="text-gray-400 hover:text-white" title="Open menu">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    <!-- Main Content Wrapper -->
+    <div class="p-4">
+        <!-- Sidebar Navigation -->
+        <div id="sideNav" class="fixed inset-y-0 left-0 w-64 bg-gray-900/95 backdrop-blur-sm transform -translate-x-full transition-transform duration-300 ease-in-out z-50">
+            <!-- Close Button -->
+            <div class="p-4 border-b border-gray-800">
+                <button id="closeSideNav" class="flex items-center text-gray-400 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
+                    Close menu
                 </button>
+            </div>
 
-                <!-- Logo -->
-                <a href="/" class="flex-shrink-0">
-                    <h1 class="text-2xl font-bold">h!anime</h1>
+            <!-- Community Button -->
+            <div class="p-4">
+                <a href="/community" class="flex items-center w-full px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Community
                 </a>
+            </div>
 
-                <!-- Search Bar -->
-                <div class="flex-1 max-w-2xl mx-4">
-                    <div class="relative">
-                        <input
-                            type="text"
-                            placeholder="Search anime..."
-                            class="w-full bg-gray-800 rounded-md py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
-                        >
-                        <svg class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
+            <!-- Navigation Links -->
+            <nav class="px-4 space-y-1">
+                <a href="/" class="block py-2 text-white hover:text-pink-500">Home</a>
+                <a href="/subbed" class="block py-2 text-white hover:text-pink-500">Subbed Anime</a>
+                <a href="/dubbed" class="block py-2 text-white hover:text-pink-500">Dubbed Anime</a>
+                <a href="/popular" class="block py-2 text-white hover:text-pink-500">Most Popular</a>
+                <a href="/movies" class="block py-2 text-white hover:text-pink-500">Movies</a>
+                <a href="/tv-series" class="block py-2 text-white hover:text-pink-500">TV Series</a>
+                <a href="/ovas" class="block py-2 text-white hover:text-pink-500">OVAs</a>
+                <a href="/onas" class="block py-2 text-white hover:text-pink-500">ONAs</a>
+                <a href="/specials" class="block py-2 text-white hover:text-pink-500">Specials</a>
+                <a href="/events" class="block py-2 text-white hover:text-pink-500">Events</a>
+                <a href="/app" class="block py-2 text-white hover:text-pink-500">HiAnime App</a>
+            </nav>
+
+            <!-- Genre Section -->
+            <div class="px-4 mt-6">
+                <h3 class="text-lg font-semibold text-white mb-4">Genre</h3>
+                <div class="grid grid-cols-2 gap-2" id="genreGrid">
+                    <!-- Genres will be populated by JavaScript -->
                 </div>
+                <button id="moreGenres" class="mt-4 text-sm text-gray-400 hover:text-white flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    More
+                </button>
+            </div>
+        </div>
 
-                <!-- User Menu -->
-                <div class="flex items-center space-x-4">
-                    <button class="text-gray-400 hover:text-white" title="Notifications">
+        <!-- Main Navigation -->
+        <nav class="bg-gray-900 text-white">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Menu Button -->
+                    <button id="openSideNav" class="text-gray-400 hover:text-white" title="Open menu">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Overlay -->
-    <div id="sideNavOverlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+                    <!-- Logo -->
+                    <a href="/" class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold">h!anime</h1>
+                    </a>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-2 py-3">
-        <div class="flex flex-col lg:flex-row gap-3">
-            <!-- Main Content Area -->
-            <main class="flex-1">
-                <!-- Latest Episodes Grid -->
-                <div class="py-4">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-xl font-bold text-white">Latest Episodes</h2>
-                        <div class="flex space-x-2">
-                            <button class="px-2 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600">
-                                Filter
-                            </button>
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-2xl mx-4">
+                        <div class="relative">
+                            <input
+                                type="text"
+                                placeholder="Search anime..."
+                                class="w-full bg-gray-800 rounded-md py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            >
+                            <svg class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
                         </div>
                     </div>
 
-                    <!-- Grid Layout -->
-                    <div class="grid-container" id="animeGrid">
-                        <!-- Anime cards will be inserted here by JavaScript -->
-                    </div>
-
-                    <!-- Load More Button -->
-                    <div class="mt-4 text-center">
-                        <button id="loadMoreBtn" class="px-4 py-1.5 bg-pink-600 text-white rounded hover:bg-pink-700">
-                            Show more
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-4">
+                        <button class="text-gray-400 hover:text-white" title="Notifications">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
                         </button>
                     </div>
                 </div>
-            </main>
+            </div>
+        </nav>
 
-            <!-- Sidebar -->
-            <aside class="w-full lg:w-72 flex-shrink-0 grid-sidebar">
-                <div class="section-border glass-effect">
-                    <h2 class="text-lg font-bold text-white mb-3">Top 10</h2>
-                    
-                    <!-- Tab Navigation -->
-                    <div class="flex space-x-2 mb-3">
-                        <button class="px-2 py-1 rounded text-sm bg-pink-600 text-white" data-tab="today">Today</button>
-                        <button class="px-2 py-1 rounded text-sm text-gray-400 hover:text-white" data-tab="week">Week</button>
-                        <button class="px-2 py-1 rounded text-sm text-gray-400 hover:text-white" data-tab="month">Month</button>
-                    </div>
+        <!-- Overlay -->
+        <div id="sideNavOverlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
 
-                    <!-- Anime List -->
-                    <div class="space-y-2" id="topAnimeList">
-                        <!-- Top anime items will be inserted here by JavaScript -->
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto px-2 py-3">
+            <div class="flex flex-col lg:flex-row gap-3">
+                <!-- Main Content Area -->
+                <main class="flex-1">
+                    <!-- Latest Episodes Grid -->
+                    <div class="py-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-xl font-bold text-white">Latest Episodes</h2>
+                            <div class="flex space-x-2">
+                                <button class="px-2 py-1 text-sm bg-gray-700 text-white rounded hover:bg-gray-600">
+                                    Filter
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid Layout -->
+                        <div class="grid-container" id="animeGrid">
+                            <!-- Anime cards will be inserted here by JavaScript -->
+                        </div>
+
+                        <!-- Load More Button -->
+                        <div class="mt-4 text-center">
+                            <button id="loadMoreBtn" class="px-4 py-1.5 bg-pink-600 text-white rounded hover:bg-pink-700">
+                                Show more
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </aside>
+                </main>
+
+                <!-- Sidebar -->
+                <aside class="w-full lg:w-72 flex-shrink-0 grid-sidebar">
+                    <div class="section-border glass-effect">
+                        <h2 class="text-lg font-bold text-white mb-3">Top 10</h2>
+                        
+                        <!-- Tab Navigation -->
+                        <div class="flex space-x-2 mb-3">
+                            <button class="px-2 py-1 rounded text-sm bg-pink-600 text-white" data-tab="today">Today</button>
+                            <button class="px-2 py-1 rounded text-sm text-gray-400 hover:text-white" data-tab="week">Week</button>
+                            <button class="px-2 py-1 rounded text-sm text-gray-400 hover:text-white" data-tab="month">Month</button>
+                        </div>
+
+                        <!-- Anime List -->
+                        <div class="space-y-2" id="topAnimeList">
+                            <!-- Top anime items will be inserted here by JavaScript -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
 
