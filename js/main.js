@@ -1,7 +1,7 @@
 // Add this to the top of main.js
 const socialIcons = {
     discord: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/></svg>',
-    telegram: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
+    telegram: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472c-.18 1.898-.962 6.502-1.36 8.627c-.168.9-.499 1.201-.82 1.23c-.696.065-1.225-.46-1.9-.902c-1.056-.693-1.653-1.124-2.678-1.8c-1.185-.78-.417-1.21.258-1.91c.177-.184 3.247-2.977 3.307-3.23c.007-.032.014-.15-.056-.212s-.041-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345c-.48.33-.913.49-1.302.48c-.428-.008-1.252-.241-1.865-.44c-.752-.245-1.349-.374-1.297-.789c.027-.216.325-.437.893-.663c3.498-1.524 5.83-2.529 6.998-3.014c3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
     reddit: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547l-.8 3.747c1.824.07 3.48.632 4.674 1.488c.308-.309.73-.491 1.207-.491c.968 0 1.754.786 1.754 1.754c0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87c-3.874 0-7.004-2.176-7.004-4.87c0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754c.463 0 .898.196 1.207.49c1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197a.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248c.687 0 1.248-.561 1.248-1.249c0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25c0 .687.561 1.248 1.249 1.248c.688 0 1.249-.561 1.249-1.249c0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094a.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913c.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463a.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73c-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>',
     twitter: '<svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>'
 };
@@ -200,8 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            console.log('Fetching anime data...', { page, filters });
-
             const variables = {
                 page,
                 perPage: 12,
@@ -263,20 +261,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ query, variables })
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const json = await response.json();
+
+            // Check for GraphQL errors
+            if (json.errors) {
+                throw new Error(json.errors[0].message);
             }
 
-            const data = await response.json();
-
-            if (data.errors) {
-                console.error('GraphQL Errors:', data.errors);
-                throw new Error(data.errors[0].message);
+            // Check if data exists
+            if (!json.data || !json.data.Page || !json.data.Page.media) {
+                throw new Error('Invalid API response format');
             }
 
-            console.log('API Response:', data);
-
-            const animes = data.data.Page.media;
+            const animes = json.data.Page.media;
 
             // Clear grid if it's a new search
             if (page === 1) {
@@ -301,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Update load more button visibility
-            if (!data.data.Page.pageInfo.hasNextPage) {
+            if (!json.data.Page.pageInfo.hasNextPage) {
                 loadMoreBtn.style.display = 'none';
             } else {
                 loadMoreBtn.style.display = 'block';
@@ -517,105 +514,6 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadAnimeGrid(1, activeFilters);
     });
 
-    // Update loadAnimeGrid function to handle filters
-    async function loadAnimeGrid(page = 1, filters = {}) {
-        try {
-            // Construct filter variables for the query
-            const variables = {
-                page,
-                perPage: 12,
-                format_in: filters.format,
-                status_in: filters.status,
-                season_in: filters.season,
-                genre_in: filters.genre
-            };
-
-            // Update the query to include filters
-            const query = `
-                query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $status_in: [MediaStatus], $season_in: [MediaSeason], $genre_in: [String]) {
-                    Page(page: $page, perPage: $perPage) {
-                        pageInfo {
-                            total
-                            currentPage
-                            lastPage
-                            hasNextPage
-                        }
-                        media(
-                            type: ANIME,
-                            format_in: $format_in,
-                            status_in: $status_in,
-                            season_in: $season_in,
-                            genre_in: $genre_in,
-                            sort: [TRENDING_DESC, POPULARITY_DESC]
-                        ) {
-                            id
-                            title {
-                                romaji
-                                english
-                                native
-                            }
-                            coverImage {
-                                large
-                                medium
-                            }
-                            format
-                            episodes
-                            duration
-                            status
-                            genres
-                            averageScore
-                            popularity
-                            nextAiringEpisode {
-                                episode
-                                timeUntilAiring
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const response = await fetch('https://graphql.anilist.co', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({ query, variables })
-            });
-
-            const data = await response.json();
-            const animes = data.data.Page.media;
-
-            // Clear grid if it's a new search
-            if (page === 1) {
-                animeGrid.innerHTML = '';
-            }
-
-            animes.forEach(anime => {
-                const card = createAnimeCard(anime);
-                animeGrid.appendChild(card);
-            });
-
-            // Update load more button visibility
-            if (!data.data.Page.pageInfo.hasNextPage) {
-                loadMoreBtn.style.display = 'none';
-            } else {
-                loadMoreBtn.style.display = 'block';
-            }
-
-        } catch (error) {
-            console.error('Error loading anime grid:', error);
-            animeGrid.innerHTML = `
-                <div class="col-span-full text-center py-8">
-                    <div class="text-red-500 mb-2">Failed to load anime</div>
-                    <button onclick="loadAnimeGrid(1)" class="text-sm text-gray-400 hover:text-pink-500">
-                        Try again
-                    </button>
-                </div>
-            `;
-        }
-    }
-
     // Update the load more button to include filters
     loadMoreBtn?.addEventListener('click', () => {
         currentPage++;
@@ -687,7 +585,6 @@ async function loadTopAnime(tab = 'today') {
                 sort = 'TRENDING_DESC';
         }
 
-        // Fetch data using the animeData API
         const query = `
             query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
                 Page(page: 1, perPage: 10) {
@@ -731,8 +628,19 @@ async function loadTopAnime(tab = 'today') {
             })
         });
 
-        const data = await response.json();
-        const animes = data.data.Page.media;
+        const json = await response.json();
+
+        // Check for GraphQL errors
+        if (json.errors) {
+            throw new Error(json.errors[0].message);
+        }
+
+        // Check if data exists
+        if (!json.data || !json.data.Page || !json.data.Page.media) {
+            throw new Error('Invalid API response format');
+        }
+
+        const animes = json.data.Page.media;
 
         // Render the anime list
         topAnimeList.innerHTML = animes.map((anime, index) => `
@@ -743,10 +651,11 @@ async function loadTopAnime(tab = 'today') {
                 </span>
                 <div class="relative flex-shrink-0">
                     <img
-                        src="${anime.coverImage.medium}"
+                        src="${anime.coverImage?.medium || 'https://via.placeholder.com/48x64?text=No+Image'}"
                         alt="${anime.title.english || anime.title.romaji}"
                         class="w-12 h-16 object-cover rounded shadow-lg group-hover:shadow-pink-500/20 transition-shadow"
                         loading="lazy"
+                        onerror="this.src='https://via.placeholder.com/48x64?text=Error'"
                     >
                     ${anime.nextAiringEpisode ? `
                         <div class="absolute top-0 right-0 bg-pink-600 text-white text-xs px-1 rounded-bl">
@@ -784,8 +693,9 @@ async function loadTopAnime(tab = 'today') {
         topAnimeList.innerHTML = `
             <div class="text-center py-4">
                 <div class="text-red-500 mb-2">Failed to load top anime</div>
+                <div class="text-sm text-gray-400 mb-4">${error.message}</div>
                 <button onclick="loadTopAnime('${tab}')" 
-                        class="text-sm text-gray-400 hover:text-pink-500">
+                        class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
                     Try again
                 </button>
             </div>
