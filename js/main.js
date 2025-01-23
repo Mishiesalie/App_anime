@@ -208,16 +208,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let sort;
             switch (tab) {
                 case 'today':
-                    sort = 'TRENDING_DESC';
+                    sort = ['TRENDING_DESC'];
                     break;
                 case 'week':
-                    sort = 'POPULARITY_DESC';
+                    sort = ['POPULARITY_DESC'];
                     break;
                 case 'month':
-                    sort = 'SCORE_DESC';
+                    sort = ['SCORE_DESC'];
                     break;
                 default:
-                    sort = 'TRENDING_DESC';
+                    sort = ['TRENDING_DESC'];
             }
 
             const query = `
@@ -258,20 +258,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     variables: {
                         page: 1,
                         perPage: 10,
-                        sort: [sort]
+                        sort: sort
                     }
                 })
             });
 
             const json = await response.json();
 
-            // Check for GraphQL errors
             if (json.errors) {
                 throw new Error(json.errors[0].message);
             }
 
-            // Check if data exists
-            if (!json.data || !json.data.Page || !json.data.Page.media) {
+            if (!json.data?.Page?.media) {
                 throw new Error('Invalid API response format');
             }
 
@@ -315,8 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     ${anime.trending}
                                 </span>
                             ` : ''}
-                            ${anime.format ? `
-                                <span>${anime.format}</span>
+                            ${anime.episodes ? `
+                                <span>${anime.episodes} eps</span>
                             ` : ''}
                         </div>
                     </div>
@@ -339,6 +337,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadAnimeGrid(page = 1, filters = {}) {
+        const animeGrid = document.getElementById('animeGrid');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+
         try {
             // Show loading state
             if (page === 1) {
@@ -351,17 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }
 
-            const variables = {
-                page,
-                perPage: 12,
-                format_in: filters.format || null,
-                status_in: filters.status || null,
-                season_in: filters.season || null,
-                genre_in: filters.genre || null
-            };
-
             const query = `
-                query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $status_in: [MediaStatus], $season_in: [MediaSeason], $genre_in: [String]) {
+                query ($page: Int, $perPage: Int) {
                     Page(page: $page, perPage: $perPage) {
                         pageInfo {
                             total
@@ -369,14 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             lastPage
                             hasNextPage
                         }
-                        media(
-                            type: ANIME,
-                            format_in: $format_in,
-                            status_in: $status_in,
-                            season_in: $season_in,
-                            genre_in: $genre_in,
-                            sort: [TRENDING_DESC, POPULARITY_DESC]
-                        ) {
+                        media(type: ANIME, sort: [TRENDING_DESC, POPULARITY_DESC]) {
                             id
                             title {
                                 romaji
@@ -409,18 +394,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ query, variables })
+                body: JSON.stringify({
+                    query,
+                    variables: {
+                        page,
+                        perPage: 12
+                    }
+                })
             });
 
             const json = await response.json();
 
-            // Check for GraphQL errors
             if (json.errors) {
                 throw new Error(json.errors[0].message);
             }
 
-            // Check if data exists
-            if (!json.data || !json.data.Page || !json.data.Page.media) {
+            if (!json.data?.Page?.media) {
                 throw new Error('Invalid API response format');
             }
 
@@ -449,10 +438,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             // Update load more button visibility
-            if (!json.data.Page.pageInfo.hasNextPage) {
-                loadMoreBtn.style.display = 'none';
-            } else {
-                loadMoreBtn.style.display = 'block';
+            if (loadMoreBtn) {
+                if (!json.data.Page.pageInfo.hasNextPage) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'block';
+                }
             }
 
         } catch (error) {
@@ -702,154 +693,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load of top anime
     loadTopAnime(currentTab);
 });
-
-async function loadTopAnime(tab = 'today') {
-    const topAnimeList = document.getElementById('topAnimeList');
-    if (!topAnimeList) return;
-
-    // Show loading state first
-    topAnimeList.innerHTML = Array(10).fill(0).map((_, index) => `
-        <div class="animate-pulse flex items-center space-x-3 p-2">
-            <div class="text-2xl font-bold text-pink-500/50 w-8">${index + 1}</div>
-            <div class="w-12 h-16 bg-gray-700 rounded"></div>
-            <div class="flex-1">
-                <div class="h-4 bg-gray-700 rounded w-3/4"></div>
-                <div class="mt-2 h-3 bg-gray-700 rounded w-1/2"></div>
-            </div>
-        </div>
-    `).join('');
-
-    try {
-        // Determine sort method based on tab
-        let sort;
-        switch (tab) {
-            case 'today':
-                sort = 'TRENDING_DESC';
-                break;
-            case 'week':
-                sort = 'POPULARITY_DESC';
-                break;
-            case 'month':
-                sort = 'SCORE_DESC';
-                break;
-            default:
-                sort = 'TRENDING_DESC';
-        }
-
-        const query = `
-            query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
-                Page(page: 1, perPage: 10) {
-                    media(type: ANIME, sort: $sort, status_not: NOT_YET_RELEASED) {
-                        id
-                        title {
-                            romaji
-                            english
-                        }
-                        coverImage {
-                            medium
-                        }
-                        averageScore
-                        popularity
-                        trending
-                        episodes
-                        nextAiringEpisode {
-                            episode
-                            timeUntilAiring
-                        }
-                        format
-                        status
-                    }
-                }
-            }
-        `;
-
-        const response = await fetch('https://graphql.anilist.co', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                query,
-                variables: {
-                    page: 1,
-                    perPage: 10,
-                    sort: [sort]
-                }
-            })
-        });
-
-        const json = await response.json();
-
-        // Check for GraphQL errors
-        if (json.errors) {
-            throw new Error(json.errors[0].message);
-        }
-
-        // Check if data exists
-        if (!json.data || !json.data.Page || !json.data.Page.media) {
-            throw new Error('Invalid API response format');
-        }
-
-        const animes = json.data.Page.media;
-
-        // Render the anime list
-        topAnimeList.innerHTML = animes.map((anime, index) => `
-            <a href="/anime/${anime.id}" 
-               class="flex items-center space-x-3 p-2 hover:bg-gray-700/50 rounded-lg group transition-colors">
-                <span class="text-2xl font-bold text-pink-500 w-8">
-                    ${index + 1}
-                </span>
-                <div class="relative flex-shrink-0">
-                    <img
-                        src="${anime.coverImage?.medium || 'https://via.placeholder.com/48x64?text=No+Image'}"
-                        alt="${anime.title.english || anime.title.romaji}"
-                        class="w-12 h-16 object-cover rounded shadow-lg group-hover:shadow-pink-500/20 transition-shadow"
-                        loading="lazy"
-                        onerror="this.src='https://via.placeholder.com/48x64?text=Error'"
-                    >
-                    ${anime.nextAiringEpisode ? `
-                        <div class="absolute top-0 right-0 bg-pink-600 text-white text-xs px-1 rounded-bl">
-                            EP ${anime.nextAiringEpisode.episode}
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-white text-sm font-medium truncate group-hover:text-pink-500 transition-colors">
-                        ${anime.title.english || anime.title.romaji}
-                    </h3>
-                    <div class="flex items-center space-x-2 text-xs text-gray-400 mt-1">
-                        ${anime.averageScore ? `
-                            <span class="flex items-center">
-                                <span class="text-pink-500">★</span>
-                                ${(anime.averageScore / 10).toFixed(1)}
-                            </span>
-                        ` : ''}
-                        ${anime.trending ? `
-                            <span class="flex items-center">
-                                <span class="text-green-500">↑</span>
-                                ${anime.trending}
-                            </span>
-                        ` : ''}
-                        ${anime.format ? `
-                            <span>${anime.format}</span>
-                        ` : ''}
-                    </div>
-                </div>
-            </a>
-        `).join('');
-
-    } catch (error) {
-        console.error('Error loading top anime:', error);
-        topAnimeList.innerHTML = `
-            <div class="text-center py-4">
-                <div class="text-red-500 mb-2">Failed to load top anime</div>
-                <div class="text-sm text-gray-400 mb-4">${error.message}</div>
-                <button onclick="loadTopAnime('${tab}')" 
-                        class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700">
-                    Try again
-                </button>
-            </div>
-        `;
-    }
-}
