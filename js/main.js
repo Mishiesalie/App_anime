@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const query = `
-                query ($page: Int, $perPage: Int, $sort: [MediaSort]) {
+                query ($sort: [MediaSort]) {
                     Page(page: 1, perPage: 10) {
                         media(type: ANIME, sort: $sort, status_not: NOT_YET_RELEASED) {
                             id
@@ -256,8 +256,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     query,
                     variables: {
-                        page: 1,
-                        perPage: 10,
                         sort: sort
                     }
                 })
