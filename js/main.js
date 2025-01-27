@@ -690,4 +690,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load of top anime
     loadTopAnime(currentTab);
+
+    // Login button functionality
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+
+    loginBtn?.addEventListener('click', () => {
+        loginModal.classList.remove('hidden');
+    });
+
+    // Close modal when clicking outside
+    loginModal?.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.add('hidden');
+        }
+    });
+
+    // Login form handling
+    document.querySelector('#loginModal form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+            
+            // Here you would typically make an API call to your authentication endpoint
+            // For now, we'll just simulate a successful login
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // On successful login:
+            document.getElementById('loginModal').classList.add('hidden');
+            // Update UI to show logged in state (you can customize this)
+            document.getElementById('loginBtn').textContent = 'Profile';
+            
+            // Store auth token or user data
+            localStorage.setItem('isLoggedIn', 'true');
+            
+        } catch (error) {
+            console.error('Login failed:', error);
+            alert('Login failed. Please try again.');
+            
+        } finally {
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
 });
