@@ -1,11 +1,23 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { SearchIcon, MenuIcon } from '@heroicons/react/outline';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { SearchIcon, MenuIcon, BellIcon } from '@heroicons/react/outline';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const { user, logout, setIsLoginModalOpen } = useAuth();
+  const navigate = useNavigate();
+
+  // Simulate fetching unread notifications count
+  useEffect(() => {
+    if (user) {
+      // Mock API call to get unread notifications count
+      setUnreadNotifications(2);
+    } else {
+      setUnreadNotifications(0);
+    }
+  }, [user]);
 
   return (
     <nav className="bg-gray-900 text-white">
@@ -33,6 +45,21 @@ const Navbar = () => {
             <Link to="/watch2gether" className="hover:text-pink-500">Watch2gether</Link>
             <Link to="/random" className="hover:text-pink-500">Random</Link>
             <Link to="/community" className="hover:text-pink-500">Community</Link>
+            
+            {/* Notification Button */}
+            <button 
+              onClick={() => navigate('/notifications')}
+              className="relative text-gray-400 hover:text-white transition-colors"
+              aria-label="Notifications"
+            >
+              <BellIcon className="h-6 w-6" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs w-4 h-4 flex items-center justify-center rounded-full">
+                  {unreadNotifications}
+                </span>
+              )}
+            </button>
+
             {user ? (
               <div className="flex items-center space-x-4">
                 <img
@@ -74,6 +101,14 @@ const Navbar = () => {
             <Link to="/watch2gether" className="block py-2 hover:text-pink-500">Watch2gether</Link>
             <Link to="/random" className="block py-2 hover:text-pink-500">Random</Link>
             <Link to="/community" className="block py-2 hover:text-pink-500">Community</Link>
+            <Link to="/notifications" className="block py-2 hover:text-pink-500">
+              Notifications
+              {unreadNotifications > 0 && (
+                <span className="ml-2 bg-pink-500 text-white text-xs px-2 py-1 rounded-full">
+                  {unreadNotifications}
+                </span>
+              )}
+            </Link>
             {user ? (
               <div className="flex items-center space-x-4 py-2">
                 <img

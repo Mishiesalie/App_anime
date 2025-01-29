@@ -7,6 +7,7 @@ import RandomAnime from './pages/RandomAnime';
 import Community from './pages/Community';
 import LoginModal from './components/auth/LoginModal';
 import AnimeDetail from './pages/AnimeDetail';
+import NotificationsPanel from './components/notifications/NotificationsPanel';
 import { CommunityProvider } from './contexts/CommunityContext';
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
               <Route path="random" element={<RandomAnime />} />
               <Route path="community" element={<Community />} />
               <Route path="anime/:id" element={<AnimeDetail />} />
+              <Route path="notifications" element={<NotificationsPanel />} />
             </Route>
           </Routes>
         </CommunityProvider>
